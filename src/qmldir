@@ -1,0 +1,5 @@
+module com.uucidl.monome
+
+Arc4 1.0 Arc4.qml
+SerialOSC 1.0 SerialOSC.qml
+plugin monome
