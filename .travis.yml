@@ -1,0 +1,14 @@
+os:
+    - linux
+before_install:
+    - sudo apt-get --yes update
+    - sudo apt-get install p7zip
+    - "export DISPLAY=:99.0"
+    - "sh -e /etc/init.d/xvfb start"
+install:
+    - scripts/install-qt Qt
+    - export QTDIR=$TRAVIS_BUILD_DIR/Qt/5.3/gcc_64
+    - export PATH="$QTDIR"/bin:$PATH
+    - qmake -version
+script: ./test.sh
+after_success: echo "after success"

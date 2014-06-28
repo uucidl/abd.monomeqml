@@ -1,7 +1,7 @@
 Monome support for QML
 ======================
 
-Status
+Status ![Continuous Build Status](https://travis-ci.org/uucidl/pre.monomeqml.svg?branch=master)
 ------
 
 Work in progress, pre-release
