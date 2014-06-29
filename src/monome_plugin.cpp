@@ -64,6 +64,7 @@ void OSCDestination::setOscUrl(QUrl oscUrl)
 void OSCDestination::send(QString path, QVariantList payload)
 {
         oscpkt::Message message(path.toStdString());
+        int paramIndex = 0;
         for (auto it = payload.constBegin(); it != payload.constEnd(); ++it) {
                 auto value = *it;
                 auto type = static_cast<QMetaType::Type>(value.type());
@@ -83,12 +84,22 @@ void OSCDestination::send(QString path, QVariantList payload)
                 case QMetaType::Float:
                         message.pushFloat(value.toFloat());
                         break;
+                case QMetaType::UnknownType:
+                        std::cerr << "Unknown parameter type for parameter "
+                                  << paramIndex
+                                  << " in message: " << message << std::endl;
+                        break;
                 default:
                         std::cerr << "ignoring unhandled type: "
+                                  << type
+                                  << " named: "
                                   << value.typeName()
+                                  << " for parameter "
+                                  << paramIndex
                                   << "in message: " << message << std::endl;
                         break;
                 }
+                paramIndex++;
         }
 
         if (!impl) {
