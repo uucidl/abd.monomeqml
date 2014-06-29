@@ -163,7 +163,8 @@ void OSCServerThread::run()
                                         } else if (args.isInt64()) {
                                                 int64_t i;
                                                 args = args.popInt64(i);
-                                                message.append(static_cast<qlonglong>(i));
+                                                message.append(
+                                                    static_cast<qlonglong>(i));
                                         } else if (args.isFloat()) {
                                                 float f;
                                                 args = args.popFloat(f);
