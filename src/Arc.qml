@@ -73,6 +73,15 @@ QtObject {
         paint();
     }
 
+    Component.onDestruction: {
+        var context = getPaintContext();
+
+        for (var i = 0; i < 4; i++) {
+            context.drawRing(i, 0);
+        }
+
+    }
+
     property OSCDestination device: OSCDestination {
         oscUrl: arcDeviceUrl(serialOSC.hostname, serialOSC.activeDevices)
         onOscUrlChanged: {
