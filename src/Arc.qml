@@ -37,6 +37,32 @@ QtObject {
     // sent when an encoder has been released
     signal released(int encoder)
 
+    // sent when drawing to encoders is needed
+    signal paint()
+
+    function getPaintContext() {
+        var context = {
+            drawTick: function (encoder, x, level) {
+                sendArcCommand("/ring/set", encoder, x, level);
+            },
+            drawRing: function (encoder, level) {
+                sendArcCommand("/ring/all", encoder, level);
+            },
+            drawRingPattern: function (encoder, levels) {
+                display.send(prefix + "/ring/map", [encoder].concat(levels));
+            },
+            drawRingRange: function (encoder, x1, x2, level) {
+                sendArcCommand("/ring/range", encoder, x1, x2, level);
+            },
+        };
+
+        return context;
+    }
+
+    function requestPaint() {
+        paint();
+    }
+
     property OSCDestination device: OSCDestination {
         oscUrl: arcDeviceUrl(serialOSC.hostname, serialOSC.activeDevices)
         onOscUrlChanged: {
