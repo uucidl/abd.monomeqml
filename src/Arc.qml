@@ -13,11 +13,11 @@ QtObject {
     // an OSC prefix to use (to be unique)
     property string prefix
 
-    // configure the device type to match
-    property string deviceTypeToMatch
+    // configure the device name to match
+    property string deviceNameToMatch
 
-    // configure the device name to match. will override the type matching
-    property var deviceNameToMatch
+    // configure the device serial to match. will override the type matching
+    property var deviceSerialToMatch
 
     // this is the device discovery service
     property SerialOSC serialOSC
@@ -86,10 +86,12 @@ QtObject {
 
     function arcDeviceUrl(hostname, activeDevices) {
         var arcDevices = activeDevices.filter(function (device) {
-            if (deviceNameToMatch) {
-                return device.name === deviceNameToMatch;
+            if (deviceSerialToMatch) {
+                return device.serial === deviceSerialToMatch;
             }
-            return device.type === deviceTypeToMatch;
+
+            console.log(JSON.stringify(device));
+            return device.name === deviceNameToMatch;
         });
 
         if (arcDevices.length < 1) {

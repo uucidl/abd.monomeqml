@@ -13,7 +13,7 @@ Arc {
 
     // an OSC prefix to use (to be unique)
     prefix: "/arc4"
-    deviceTypeToMatch: "monome arc 4"
+    deviceNameToMatch: "monome arc 4"
 
     onDelta: {
         rings[encoder] += delta / 64.0;

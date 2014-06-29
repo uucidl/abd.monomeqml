@@ -3,4 +3,5 @@ module com.uucidl.monome
 Arc 1.0 Arc.qml
 Arc4 1.0 Arc4.qml
 SerialOSC 1.0 SerialOSC.qml
+Devices 1.0 devices.js
 plugin monome

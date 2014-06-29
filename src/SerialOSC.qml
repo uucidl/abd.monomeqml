@@ -22,7 +22,7 @@ QtObject {
         port: root.clientPort
         onMessageIn: {
             var makeDevice = function() {
-                return { id: data[1], type: data[2], port: data[3] };
+                return Devices.makeDevice(data[1], data[2], data[3]);
             };
             if (data[0] === "/serialosc/device") {
                 knownDevices.push(makeDevice());
@@ -30,7 +30,7 @@ QtObject {
                 toSerialOSC.send("/serialosc/notify",[root.clientHostname, clientPort]);
             } else if (data[0] === "/serialosc/add") {
                 var withSameId = function(device) {
-                    return device.id === data[1];
+                    return device.serial === data[1];
                 }, withDifferentId = function (device) {
                     return !withSameId(device);
                 };
@@ -41,7 +41,7 @@ QtObject {
                 toSerialOSC.send("/serialosc/notify",[root.clientHostname, clientPort]);
             } else if (data[0] === "/serialosc/remove") {
                 activeDevices = activeDevices.filter(function (device) {
-                    return device.id !== data[1];
+                    return device.serial !== data[1];
                 });
                 toSerialOSC.send("/serialosc/notify",[root.clientHostname, clientPort]);
             }

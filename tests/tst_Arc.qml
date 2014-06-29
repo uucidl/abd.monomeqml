@@ -17,63 +17,14 @@ TestCase {
     }
 
     function test_thatItMatchesByDevice_data() {
-        var device = function (type, port) {
-            return { type: type, port: port };
-        };
-        return [
-            {
-                tag: "nothing found (empty list)",
-                devices: [],
-                matchType: "",
-                expectedUrl: "",
-            },
-            {
-                tag: "nothing found",
-                devices: [
-                    device("one", 1),
-                    device("two", 2),
-                    device("two", 3),
-                    device("three", 4)
-                ],
-                matchType: "other",
-                expectedUrl: "",
-            },
-
-            {
-                tag: "found the first one",
-                devices: [
-                    device("one", 1),
-                    device("two", 2),
-                    device("two", 3),
-                    device("three", 4)
-                ],
-                matchType: "two",
-                expectedUrl: "osc.udp://host:2",
-            },
-        ];
-    }
-
-    function withArc(fn) {
-        return Utils.withComponent(arcComponent, null, {}, fn);
-    }
-
-    function test_thatItMatchesByDevice(data) {
-        withArc(function (object) {
-            object.deviceTypeToMatch = data.matchType;
-            var url = object.arcDeviceUrl("host", data.devices);
-            compare(url, data.expectedUrl);
-        });
-    }
-
-    function test_thatItMatchesByName_data() {
         var device = function (name, port) {
-            return { name: name, type: "dummy", port: port };
+            return Devices.makeDevice(null, name, port);
         };
         return [
             {
                 tag: "nothing found (empty list)",
                 devices: [],
-                matchName: null,
+                matchName: "",
                 expectedUrl: "",
             },
             {
@@ -87,6 +38,7 @@ TestCase {
                 matchName: "other",
                 expectedUrl: "",
             },
+
             {
                 tag: "found the first one",
                 devices: [
@@ -101,22 +53,70 @@ TestCase {
         ];
     }
 
-    function test_thatItMatchesByName(data) {
-         withArc(function (object) {
+    function withArc(fn) {
+        return Utils.withComponent(arcComponent, null, {}, fn);
+    }
+
+    function test_thatItMatchesByDevice(data) {
+        withArc(function (object) {
             object.deviceNameToMatch = data.matchName;
             var url = object.arcDeviceUrl("host", data.devices);
             compare(url, data.expectedUrl);
         });
     }
 
-    function test_thatItMatchesByNamePreferrentially(data) {
+    function test_thatItMatchesBySerial_data() {
+        var device = function (serial, port) {
+            return Devices.makeDevice(serial, null, port);
+        };
+        return [
+            {
+                tag: "nothing found (empty list)",
+                devices: [],
+                matchSerial: null,
+                expectedUrl: "",
+            },
+            {
+                tag: "nothing found",
+                devices: [
+                    device("one", 1),
+                    device("two", 2),
+                    device("two", 3),
+                    device("three", 4)
+                ],
+                matchSerial: "other",
+                expectedUrl: "",
+            },
+            {
+                tag: "found the first one",
+                devices: [
+                    device("one", 1),
+                    device("two", 2),
+                    device("two", 3),
+                    device("three", 4)
+                ],
+                matchSerial: "two",
+                expectedUrl: "osc.udp://host:2",
+            },
+        ];
+    }
+
+    function test_thatItMatchesBySerial(data) {
+         withArc(function (object) {
+            object.deviceSerialToMatch = data.matchSerial;
+            var url = object.arcDeviceUrl("host", data.devices);
+            compare(url, data.expectedUrl);
+        });
+    }
+
+    function test_thatItMatchesBySerialPreferrentially(data) {
         withArc(function (object) {
-            object.deviceNameToMatch = "the-name";
-            object.deviceTypeToMatch = "the-type";
+            object.deviceSerialToMatch = "the-name";
+            object.deviceNameToMatch = "the-type";
             var url = object.arcDeviceUrl("host", [
-                { name: "a", type: "one", port: 1 },
-                { name: "b", type: "the-type", port: 2 },
-                { name: "the-name", type: "three", port: 3 },
+                Devices.makeDevice("a", "one", 1),
+                Devices.makeDevice("b", "the-type", 2),
+                Devices.makeDevice("the-name", "three", 3),
             ]);
             compare(url, "osc.udp://host:3");
         });

@@ -13,7 +13,7 @@ PLUGIN_IMPORT_PATH = com/uucidl/monome
 
 INSTALL_DIR=$$(INSTALL_DIR)
 isEmpty(INSTALL_DIR) {
-	INSTALL_DIR = $$[QT_INSTALL_QML]
+        INSTALL_DIR = $$[QT_INSTALL_QML]
 }
 
 target.path = $$INSTALL_DIR/$$PLUGIN_IMPORT_PATH
@@ -21,7 +21,7 @@ target.path = $$INSTALL_DIR/$$PLUGIN_IMPORT_PATH
 qmldir.files = src/qmldir
 qmldir.path += $$target.path
 
-qmlsources.files = src/*.qml
+qmlsources.files = src/*.qml src/*.js
 qmlsources.path = $$target.path
 
 SOURCES += src/*.cpp
