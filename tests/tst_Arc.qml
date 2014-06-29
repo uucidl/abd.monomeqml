@@ -6,12 +6,12 @@ import QtTest 1.0
 import "testUtils.js" as Utils
 
 TestCase {
-    name: "Arc4"
+    name: "Arc"
 
     Component {
-        id: arc4Component
+        id: arcComponent
 
-        Arc4 {
+        Arc {
                 serialOSC: null
         }
     }
@@ -24,7 +24,7 @@ TestCase {
             {
                 tag: "nothing found (empty list)",
                 devices: [],
-                matchType: null,
+                matchType: "",
                 expectedUrl: "",
             },
             {
@@ -53,12 +53,12 @@ TestCase {
         ];
     }
 
-    function withArc4(fn) {
-        return Utils.withComponent(arc4Component, null, {}, fn);
+    function withArc(fn) {
+        return Utils.withComponent(arcComponent, null, {}, fn);
     }
 
     function test_thatItMatchesByDevice(data) {
-        withArc4(function (object) {
+        withArc(function (object) {
             object.deviceTypeToMatch = data.matchType;
             var url = object.arcDeviceUrl("host", data.devices);
             compare(url, data.expectedUrl);
@@ -102,7 +102,7 @@ TestCase {
     }
 
     function test_thatItMatchesByName(data) {
-         withArc4(function (object) {
+         withArc(function (object) {
             object.deviceNameToMatch = data.matchName;
             var url = object.arcDeviceUrl("host", data.devices);
             compare(url, data.expectedUrl);
@@ -110,7 +110,7 @@ TestCase {
     }
 
     function test_thatItMatchesByNamePreferrentially(data) {
-        withArc4(function (object) {
+        withArc(function (object) {
             object.deviceNameToMatch = "the-name";
             object.deviceTypeToMatch = "the-type";
             var url = object.arcDeviceUrl("host", [
