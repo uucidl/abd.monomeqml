@@ -31,6 +31,11 @@ You may override the installation directory like so:
     INSTALL_DIR=<alternative_target> qmake
     make
 
+Using
+-----
+
+Look for the examples under [./examples/]
+
 Contributing
 ------------
 
