@@ -9,6 +9,6 @@ function die() {
 CLANG_FORMAT=${CLANG_FORMAT:-$(which clang-format)}
 [ -x "${CLANG_FORMAT}" ] || die "missing CLANG_FORMAT env variable"
 
-find src \( -name "*.cpp" -o -name "*.hpp" \) -print | while read f; do
+find src \( -name "*.cpp" -o -name "*.hpp" -o -name "*.js" \) -print | while read f; do
                                                            "${CLANG_FORMAT}" -i "${f}"
                                                        done
