@@ -41,6 +41,16 @@ QtObject {
     signal paint()
 
     function getPaintContext() {
+        if (!connected) {
+            var doNothing = function () {};
+            return {
+                drawTick: doNothing,
+                drawRing: doNothing,
+                drawRingPattern: doNothing,
+                drawRingRange: doNothing,
+            };
+        }
+
         var context = {
             drawTick: function (encoder, x, level) {
                 sendArcCommand("/ring/set", encoder, x, level);
