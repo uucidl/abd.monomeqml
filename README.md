@@ -1,10 +1,22 @@
 Monome support for QML
 ======================
 
+This QML/Qt plugin targets Monome devices to enable common interaction
+patterns with these physical devices.
+
+To know more and purchase monome devices look at [http://monome.org/]
+
+This is not an official plugin.
+
 Status ![Continuous Build Status](https://travis-ci.org/uucidl/pre.monomeqml.svg?branch=master)
 ------
 
 Work in progress, pre-release
+
+Licensing
+---------
+
+MIT. Look for [./LICENSE]
 
 Installation
 ------------
