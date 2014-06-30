@@ -73,6 +73,12 @@ QtObject {
         paint();
     }
 
+    onConnectedChanged: {
+        if (connected) {
+            requestPaint();
+        }
+    }
+
     Component.onDestruction: {
         var context = getPaintContext();
 
