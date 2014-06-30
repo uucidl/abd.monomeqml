@@ -86,16 +86,13 @@ void OSCDestination::send(QString path, QVariantList payload)
                         break;
                 case QMetaType::UnknownType:
                         std::cerr << "Unknown parameter type for parameter "
-                                  << paramIndex
-                                  << " in message: " << message << std::endl;
+                                  << paramIndex << " in message: " << message
+                                  << std::endl;
                         break;
                 default:
-                        std::cerr << "ignoring unhandled type: "
-                                  << type
-                                  << " named: "
-                                  << value.typeName()
-                                  << " for parameter "
-                                  << paramIndex
+                        std::cerr << "ignoring unhandled type: " << type
+                                  << " named: " << value.typeName()
+                                  << " for parameter " << paramIndex
                                   << "in message: " << message << std::endl;
                         break;
                 }
