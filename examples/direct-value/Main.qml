@@ -1,21 +1,11 @@
 import com.uucidl.monome 1.0
 
+import ".."
+
 import QtQuick 2.2
 import QtQuick.Controls 1.1
 
-Rectangle {
-    width: 800
-    height: 600
-    color: "#CFC4BC"
-
-    property font defaultFont
-    defaultFont.family: "Helvetica Neue"
-    defaultFont.pixelSize: 14
-
-    property real vspace: defaultFont.pixelSize / 2.0
-    property real hspace: defaultFont.pixelSize / 3.0
-
-
+Root {
     QtObject {
         id: model
 
@@ -100,5 +90,4 @@ Rectangle {
             }
         }
     }
-
 }
