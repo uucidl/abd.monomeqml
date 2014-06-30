@@ -34,13 +34,24 @@ Root {
             tickmarksEnabled: true
         }
 
-        Text {
-            text: {
-                if (arc.connected) {
-                    return "arc found";
-                }
+        Column {
+            spacing: vspace
 
-                return "arc not found";
+            Text {
+                text: {
+                    if (arc.connected) {
+                        return "arc found";
+                    }
+
+                    return "arc not found";
+                }
+            }
+
+            Button {
+                text: "drawStyle: " + arc.style
+                onClicked: {
+                    arc.style = arc.style === "simple" ? "subdivisions" : "simple";
+                }
             }
 
             SerialOSC {
@@ -48,16 +59,18 @@ Root {
             }
 
             property Arc arc: Arc {
+                id: arc
                 prefix: "/arc"
                 deviceNameToMatch: "monome arc 4"
                 serialOSC: serialOSC
 
                 property real baseValuePerArcDelta: 1.0 / 64.0 / 4.0
-                property real fineScale: 1 / 4.0
+                property real fineScale: 1 / 64.0
                 property real valuePerArcDelta: {
                     return (fineDelta ? fineScale : 1.0) * baseValuePerArcDelta;
                 }
                 property bool fineDelta: false
+                property string style: "simple"
 
                 onPressed: {
                     if (encoder === 0) {
@@ -78,14 +91,42 @@ Root {
                 }
 
                 property var dataset: {
-                    "value": model.value
+                    "value": model.value,
+                    "style": style
                 }
                 onDatasetChanged: requestPaint()
 
                 onPaint: {
-                    var context = getPaintContext();
+                    if (style === "simple") {
+                        drawValue();
+                    } else {
+                        drawValueWithSubdivisions();
+                    }
+                }
+
+                function drawValue() {
+                    var context = getPaintContext(),
+                    valueToArc = function (value) {
+                            return 64.0 * (value - model.min) / (model.max - model.min);
+                        },
+                        unit = valueToArc(model.value);
+
                     context.drawRing(0, 0);
-                    context.drawTick(0, 64.0 * (model.value - model.min) / (model.max - model.min), 15);
+                    context.drawTick(0, Math.floor(unit), 15);
+                }
+
+                function drawValueWithSubdivisions() {
+                    var context = getPaintContext(),
+                        valueToArc = function (value) {
+                            return 64.0 * (value - model.min) / (model.max - model.min);
+                        },
+                        unit = valueToArc(model.value);
+
+                    context.drawRing(0, 0);
+                    var subdivision = (unit + 64.0 * (unit - Math.floor(unit))) % 64;
+
+                    context.drawTick(0, Math.floor(subdivision), 6);
+                    context.drawTick(0, Math.floor(unit), 15);
                 }
             }
         }
