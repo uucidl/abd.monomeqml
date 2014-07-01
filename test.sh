@@ -2,8 +2,11 @@
 HERE=$(dirname ${0})
 
 PATH=$(qmake -query QT_INSTALL_BINS):$PATH
+BUILD="${HERE}/build"
 
-(cd "${HERE}/build" && \
- INSTALL_DIR="${HERE}/build/qml" qmake ../monomeqml.pro && \
+[ -d "${BUILD}" ] || mkdir -p "${BUILD}"
+
+(cd "${BUILD}" && \
+ INSTALL_DIR="${BUILD}/qml" qmake ../monomeqml.pro && \
  make install) && \
- qmltestrunner -import build/qml -input tests
+ qmltestrunner -import "${BUILD}"/qml -input tests
