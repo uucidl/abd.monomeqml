@@ -57,6 +57,12 @@ QtObject {
             drawTick: function (encoder, x, level) {
                 sendArcCommand("/ring/set", encoder, x, level);
             },
+            drawFractionalTick: function (encoder, x, level) {
+                var frac = x - Math.floor(x),
+                    i = Math.floor(x);
+                context.drawTick(encoder, i, level * (1.0 - frac));
+                context.drawTick(encoder, (i + 1) % 64, level * (frac));
+            },
             drawRing: function (encoder, level) {
                 sendArcCommand("/ring/all", encoder, level);
             },
