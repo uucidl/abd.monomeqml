@@ -38,6 +38,14 @@ Root {
             range = makeRange(range.start, newSize);
         }
 
+        function tryTranslateTo(target) {
+            var upperBound = Math.max(range.end, max) - range.size,
+                lowerBound = Math.min(range.start, min),
+                newStart = Math.max(Math.min(target, upperBound), lowerBound);
+
+            range = makeRange(newStart, range.size);
+        }
+
         function makeRange(start, size) {
             return {
                 start: start,
@@ -87,7 +95,7 @@ Root {
             }
         }
 
-                Text {
+        Text {
             text: {
                 if (arc.connected) {
                     return "arc found";
@@ -105,12 +113,12 @@ Root {
                 deviceNameToMatch: "monome arc 4"
                 serialOSC: serialOSC
 
-                property string aspectToEdit: "none"
+                property string aspectToEdit: "translate"
                 function cycleAspectToEdit() {
                     var table = {
-                        none: "start",
+                        translate: "start",
                         start: "end",
-                        end: "none",
+                        end: "translate",
                     };
 
                     aspectToEdit = table[aspectToEdit];
@@ -122,15 +130,20 @@ Root {
                 property real valuePerArcDelta: {
                     return (fineDelta ? fineScale : 1.0) * baseValuePerArcDelta;
                 }
+                property real msForCycle: 250.0
+                property real pressOriginMs
 
                 onPressed: {
                     if (encoder === 0) {
+                        pressOriginMs = Date.now();
                         fineDelta = true;
                     }
                 }
 
                 onReleased: {
-                    if (encoder === 0) {
+                    var durationMs = Date.now() - pressOriginMs;
+
+                    if (encoder === 0 && durationMs <= msForCycle) {
                         cycleAspectToEdit();
                     }
 
@@ -141,8 +154,10 @@ Root {
 
                 onDelta: {
                     if (encoder === 0) {
-                        var modelDelta = delta * baseValuePerArcDelta;
-                        if (aspectToEdit === "start") {
+                        var modelDelta = delta * valuePerArcDelta;
+                        if (aspectToEdit === "translate") {
+                            model.tryTranslateTo(model.start + modelDelta);
+                        } else if (aspectToEdit === "start") {
                             model.tryMoveStartTo(model.start + modelDelta);
                         } else if (aspectToEdit == "end") {
                             model.tryMoveEndTo(model.end + modelDelta);
