@@ -18,14 +18,16 @@ isEmpty(INSTALL_DIR) {
 
 target.path = $$INSTALL_DIR/$$PLUGIN_IMPORT_PATH
 
-qmldir.files = src/qmldir
+sourcedir = $$_PRO_FILE_PWD_/src
+
+qmldir.files = $$sourcedir/qmldir
 qmldir.path += $$target.path
 
-qmlsources.files = src/*.qml src/*.js
+qmlsources.files = $$sourcedir/*.qml $$sourcedir/*.js
 qmlsources.path = $$target.path
 
-SOURCES += src/*.cpp
-HEADERS += src/*.hpp
+SOURCES += $$sourcedir/*.cpp
+HEADERS += $$sourcedir/*.hpp
 
 ## OSCPKT
 INCLUDEPATH += $$_PRO_FILE_PWD_/third-party/oscpkt/
