@@ -32,9 +32,11 @@ QtObject {
     signal delta(int encoder, int delta)
 
     // sent when an encoder has been pressed
+    // for arcs produced before 2012
     signal pressed(int encoder)
 
     // sent when an encoder has been released
+    // for arcs produced before 2012
     signal released(int encoder)
 
     // sent when drawing to encoders is needed
