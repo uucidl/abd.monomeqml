@@ -147,19 +147,28 @@ Root {
                     aspectToEdit = table[aspectToEdit];
                 }
 
-                property real baseValuePerArcDelta: 1.0 / 64.0 / 4.0
-                property real fineScale: 1.0 / 64.0
-                property bool fineDelta: false
-                property real valuePerArcDelta: {
-                    return (fineDelta ? fineScale : 1.0) * baseValuePerArcDelta;
+                property var gesture: LinearRelativeGesture {
+                    property var adjusters: {
+                        "translate": function (modelDelta) {
+                            model.tryTranslateTo(model.start + modelDelta);
+                        },
+                        "start": function (modelDelta) {
+                            model.tryMoveStartTo(model.start + modelDelta);
+                        },
+                        "end": function (modelDelta) {
+                            model.tryMoveEndTo(model.end + modelDelta);
+                        }
+                    }
+                    modelAdjustBy: adjusters[arc.aspectToEdit]
                 }
+
                 property real msForCycle: 250.0
                 property real pressOriginMs
 
                 onPressed: {
                     if (encoder === 0) {
                         pressOriginMs = Date.now();
-                        fineDelta = true;
+                        gesture.fineDelta = true;
                     }
                 }
 
@@ -171,20 +180,13 @@ Root {
                     }
 
                     if (encoder === 0) {
-                        fineDelta = false;
+                        gesture.fineDelta = false;
                     }
                 }
 
                 onDelta: {
                     if (encoder === 0) {
-                        var modelDelta = delta * valuePerArcDelta;
-                        if (aspectToEdit === "translate") {
-                            model.tryTranslateTo(model.start + modelDelta);
-                        } else if (aspectToEdit === "start") {
-                            model.tryMoveStartTo(model.start + modelDelta);
-                        } else if (aspectToEdit == "end") {
-                            model.tryMoveEndTo(model.end + modelDelta);
-                        }
+                        gesture.adjustBy(delta);
                     }
                 }
 

@@ -64,29 +64,29 @@ Root {
                 deviceNameToMatch: "monome arc 4"
                 serialOSC: serialOSC
 
-                property real baseValuePerArcDelta: 1.0 / 64.0 / 4.0
-                property real fineScale: 1 / 64.0
-                property real valuePerArcDelta: {
-                    return (fineDelta ? fineScale : 1.0) * baseValuePerArcDelta;
+                property var gesture: LinearRelativeGesture {
+                    modelAdjustBy: function(deltaInModelUnits) {
+                        model.setValue(model.value + deltaInModelUnits);
+                    }
                 }
-                property bool fineDelta: false
+
                 property string style: "simple"
 
                 onPressed: {
                     if (encoder === 0) {
-                        fineDelta = true;
+                        gesture.fineDelta = true;
                     }
                 }
 
                 onReleased: {
                     if (encoder === 0) {
-                        fineDelta = false;
+                        gesture.fineDelta = false;
                     }
                 }
 
                 onDelta: {
                     if (encoder === 0) {
-                        model.setValue(model.value + delta * valuePerArcDelta);
+                        gesture.adjustBy(delta);
                     }
                 }
 
