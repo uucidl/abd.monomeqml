@@ -55,6 +55,13 @@ Root {
         }
     }
 
+    Component.onCompleted: {
+        var halfRange = (model.max - model.min) / 2.0,
+            center = (model.max + model.min) / 2.0;
+        model.tryMoveEndTo(center + halfRange / 2.0);
+        model.tryMoveStartTo(center - halfRange / 2.0);
+    }
+
     Column {
         spacing: vspace
 
@@ -95,6 +102,21 @@ Root {
             }
         }
 
+        Flow {
+            spacing: hspace
+            Text {
+                font: defaultFont
+                text: "editing mode"
+            }
+
+            Button {
+                text: arc.aspectToEdit
+                onClicked: {
+                    arc.cycleAspectToEdit();
+                }
+            }
+        }
+
         Text {
             text: {
                 if (arc.connected) {
@@ -109,6 +131,7 @@ Root {
             }
 
             property Arc arc: Arc {
+                id: arc
                 prefix: "/arc"
                 deviceNameToMatch: "monome arc 4"
                 serialOSC: serialOSC
@@ -175,10 +198,10 @@ Root {
                 onPaint: {
                     var context = getPaintContext(),
                         valueToRingValue = function (value) {
-                            return Math.min(63, Math.max(0, (64.0 * (value - model.min) / (model.max - model.min))|0));
+                            return Math.min(63, Math.max(0, (64.0 * (value - model.min) / (model.max - model.min))));
                         },
-                        startTick = valueToRingValue(model.start),
-                        endTick = valueToRingValue(model.end);
+                        startTick = valueToRingValue(model.start)|0,
+                        endTick = valueToRingValue(model.end)|0;
 
                     context.drawRing(0, 0);
 
@@ -189,7 +212,6 @@ Root {
                     }
 
                     context.drawRingRange(0, startTick, endTick, rangeLevel);
-
                     if (aspectToEdit === "start") {
                         context.drawTick(0, startTick, 15);
                     } else if (aspectToEdit === "end") {
