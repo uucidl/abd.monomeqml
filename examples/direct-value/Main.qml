@@ -112,7 +112,7 @@ Root {
                         unit = valueToArc(model.value);
 
                     context.drawRing(0, 0);
-                    context.drawTick(0, Math.floor(unit), 15);
+                    context.drawFractionalTick(0, unit, 15);
                 }
 
                 function drawValueWithSubdivisions() {
@@ -125,8 +125,8 @@ Root {
                     context.drawRing(0, 0);
                     var subdivision = (unit + 64.0 * (unit - Math.floor(unit))) % 64;
 
-                    context.drawTick(0, Math.floor(subdivision), 6);
-                    context.drawTick(0, Math.floor(unit), 15);
+                    context.drawFractionalTick(0, subdivision, 4);
+                    context.drawFractionalTick(0, unit, 15);
                 }
             }
         }

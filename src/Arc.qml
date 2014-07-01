@@ -47,6 +47,7 @@ QtObject {
             var doNothing = function () {};
             return {
                 drawTick: doNothing,
+                drawFractionalTick: doNothing,
                 drawRing: doNothing,
                 drawRingPattern: doNothing,
                 drawRingRange: doNothing,
