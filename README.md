@@ -4,9 +4,11 @@ Monome support for QML
 This QML/Qt plugin targets Monome devices to enable common interaction
 patterns with these physical devices.
 
-To know more and purchase monome devices look at [http://monome.org/]
+To know more and purchase monome devices look on the
+[official website](http://monome.org/)
 
-This is not an official plugin.
+Note: this is not an official plugin. Contact the manufacturer for
+device questions.
 
 Status ![Continuous Build Status](https://travis-ci.org/uucidl/pre.monomeqml.svg?branch=master)
 ------
@@ -16,7 +18,7 @@ Work in progress, pre-release
 Licensing
 ---------
 
-MIT. Look for [./LICENSE]
+MIT. Look for the [LICENSE](./LICENSE) file.
 
 Installation
 ------------
@@ -34,7 +36,15 @@ You may override the installation directory like so:
 Using
 -----
 
-Look for the examples under [./examples/]
+Look for the examples under [examples](./examples/) directory.
+
+For instance to run the direct value manipulation example:
+
+    ./test.sh
+    qmlscene -I build/qml examples/direct-value/Main.qml
+
+Calling test.sh ensures the plugin has been built and installed to
+build/qml
 
 Contributing
 ------------
@@ -42,6 +52,6 @@ Contributing
 Requirement: qt5
 Optional requirements: clang-format
 
-use test.sh to run the unit tests.
+use [test.sh](./test.sh) to run the unit tests.
 
-use pre-commit.sh to be sure your code is well formatted (uses clang-format)
+use [pre-commit.sh](./pre-commit.sh) to ensure the code is well formatted (uses clang-format)
