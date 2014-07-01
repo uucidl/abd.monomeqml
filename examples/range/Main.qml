@@ -13,14 +13,18 @@ Root {
         property real max: 1.0
         property real minimumRangeSize: 0.01
 
+        property var range: makeRange(min, max - min)
+        property var extent: makeRange(min, max - min)
+
         readonly property real start: range.start
         readonly property real end: range.end
         readonly property real size: range.size
 
-        property var range: makeRange(min, max - min)
-        property var extent: makeRange(min, max - min)
-
         function tryMoveStartTo(target) {
+            if (start === target) {
+                return;
+            }
+
             var upperBound = range.end - minimumRangeSize,
                 lowerBound = Math.min(range.start, min),
                 newStart = Math.max(Math.min(target, upperBound), lowerBound),
@@ -30,6 +34,10 @@ Root {
         }
 
         function tryMoveEndTo(target) {
+            if (end === target) {
+                return;
+            }
+
             var upperBound = Math.max(range.end, max),
                 lowerBound = range.start + minimumRangeSize,
                 newEnd = Math.max(Math.min(target, upperBound), lowerBound),
@@ -39,6 +47,10 @@ Root {
         }
 
         function tryTranslateTo(target) {
+            if (start === target) {
+                return;
+            }
+
             var upperBound = Math.max(range.end, max) - range.size,
                 lowerBound = Math.min(range.start, min),
                 newStart = Math.max(Math.min(target, upperBound), lowerBound);
@@ -85,7 +97,6 @@ Root {
                 value: model.start
                 onValueChanged: {
                     model.tryMoveStartTo(value);
-                    value = model.start;
                 }
                 minimumValue: model.min
                 maximumValue: model.max
@@ -95,7 +106,6 @@ Root {
                 value: model.end
                 onValueChanged: {
                     model.tryMoveEndTo(value);
-                    value = model.end;
                 }
                 minimumValue: model.min
                 maximumValue: model.max

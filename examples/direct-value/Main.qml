@@ -14,6 +14,10 @@ Root {
         property real max: 1.0
 
         function setValue(newValue) {
+            if (newValue === value) {
+                return;
+            }
+
             value = Math.min(Math.max(newValue, min), max);
         }
     }
