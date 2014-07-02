@@ -54,6 +54,13 @@ Root {
                 }
             }
 
+            Button {
+                text: "gestureType: " + arc.gestureType
+                onClicked: {
+                    arc.cycleGestureType();
+                }
+            }
+
             SerialOSC {
                 id: serialOSC
             }
@@ -64,10 +71,32 @@ Root {
                 deviceNameToMatch: "monome arc 4"
                 serialOSC: serialOSC
 
-                property var gesture: LinearRelativeGesture {
-                    modelAdjustBy: function(deltaInModelUnits) {
-                        model.setValue(model.value + deltaInModelUnits);
-                    }
+                property var modelAdjustBy: function(deltaInModelUnits) {
+                    model.setValue(model.value + deltaInModelUnits);
+                }
+
+                property var linearGesture: LinearRelativeGesture {
+                    modelAdjustBy: arc.modelAdjustBy
+                }
+
+                property var acceleratedGesture: AcceleratedRelativeGesture {
+                    modelAdjustBy: arc.modelAdjustBy
+                }
+
+                property string gestureType: "accelerated"
+                property var gestures: {
+                    "linear": linearGesture,
+                    "accelerated": acceleratedGesture,
+                }
+                property var gesture: gestures[gestureType]
+
+                function cycleGestureType() {
+                    var nextType = {
+                        "accelerated": "linear",
+                        "linear": "accelerated",
+                    };
+
+                    gestureType = nextType[gestureType];
                 }
 
                 property string style: "simple"
