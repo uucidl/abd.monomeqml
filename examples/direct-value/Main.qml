@@ -79,9 +79,14 @@ Root {
                 deviceNameToMatch: "monome arc 4"
                 serialOSC: serialOSC
 
-                property var modelAdjustBy: function(deltaInModelUnits) {
-                    model.setValue(model.value + deltaInModelUnits);
+                property var filter: DisturbanceCorrected {
+                    id: correctAroundPressAndRelease
+                    modelAdjustBy: function (delta) {
+                        model.setValue(model.value + delta);
+                    }
                 }
+
+                property var modelAdjustBy: correctAroundPressAndRelease.adjustBy
 
                 property var linearGesture: LinearRelativeGesture {
                     modelAdjustBy: arc.modelAdjustBy
@@ -111,12 +116,14 @@ Root {
 
                 onPressed: {
                     if (encoder === 0) {
+                        correctAroundPressAndRelease.disturb();
                         gesture.fineDelta = true;
                     }
                 }
 
                 onReleased: {
                     if (encoder === 0) {
+                        correctAroundPressAndRelease.disturb();
                         gesture.fineDelta = false;
                     }
                 }

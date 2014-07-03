@@ -157,19 +157,27 @@ Root {
                     aspectToEdit = table[aspectToEdit];
                 }
 
-                property var gesture: LinearRelativeGesture {
-                    property var adjusters: {
-                        "translate": function (modelDelta) {
-                            model.tryTranslateTo(model.start + modelDelta);
-                        },
-                        "start": function (modelDelta) {
-                            model.tryMoveStartTo(model.start + modelDelta);
-                        },
-                        "end": function (modelDelta) {
-                            model.tryMoveEndTo(model.end + modelDelta);
-                        }
+                property var adjusters: {
+                    "translate": function (modelDelta) {
+                        model.tryTranslateTo(model.start + modelDelta);
+                    },
+                    "start": function (modelDelta) {
+                        model.tryMoveStartTo(model.start + modelDelta);
+                    },
+                    "end": function (modelDelta) {
+                        model.tryMoveEndTo(model.end + modelDelta);
                     }
-                    modelAdjustBy: adjusters[arc.aspectToEdit]
+                }
+
+                property var filter: DisturbanceCorrected {
+                    id: correctPressRelease
+                    modelAdjustBy: arc.adjusters[arc.aspectToEdit]
+                }
+
+                property var modelAdjustBy: correctPressRelease.adjustBy
+
+                property var gesture: LinearRelativeGesture {
+                    modelAdjustBy: arc.modelAdjustBy
                 }
 
                 property real msForCycle: 250.0
@@ -177,6 +185,7 @@ Root {
 
                 onPressed: {
                     if (encoder === 0) {
+                        correctPressRelease.disturb();
                         pressOriginMs = Date.now();
                         gesture.fineDelta = true;
                     }
@@ -190,6 +199,7 @@ Root {
                     }
 
                     if (encoder === 0) {
+                        correctPressRelease.disturb();
                         gesture.fineDelta = false;
                     }
                 }
