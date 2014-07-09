@@ -22,11 +22,15 @@ Root {
         }
     }
 
+    function valueToString(value) {
+        return Math.round(10000 * value) / 100.0;
+    }
+
     Column {
         spacing: vspace
 
         Text {
-            text: "value: " + Math.round(10000 * model.value) / 100.0
+            text: "value: " + valueToString(model.value)
             font: defaultFont
         }
 
@@ -161,6 +165,110 @@ Root {
                     context.drawFractionalTick(0, subdivision, 4);
                     context.drawFractionalTick(0, unit, 15);
                 }
+            }
+        }
+        Rectangle {
+            id: trial
+            height: 200
+            width: 200
+            color: modelReachedValue ? "white" : "darkgrey"
+            property string instruction: ""
+            state: "Waiting"
+
+            property real value: -1.0
+            property real valueSetTS
+            onValueChanged: {
+                valueSetTS = Date.now();
+            }
+            property real successMinMs: Number.POSITIVE_INFINITY
+            property real successMaxMs: Number.NEGATIVE_INFINITY
+            property real totalSuccessMs: 0.0
+            property int successes: 0
+            property bool modelReachedValue: valueToString(model.value) == valueToString(trial.value)
+            property real valueReachedTS
+            onModelReachedValueChanged: {
+                if (modelReachedValue) {
+                    valueReachedTS = Date.now();
+                    trial.waitForValue = true;
+                }
+            }
+            property bool waitForValue: false
+
+            function recordSuccess() {
+                trial.successes++;
+                var thisTime = trial.valueReachedTS - trial.valueSetTS;
+                trial.successMinMs = Math.min(trial.successMinMs, thisTime);
+                trial.successMaxMs = Math.max(trial.successMaxMs, thisTime);
+                trial.totalSuccessMs += thisTime;
+            }
+
+            property var timer: Timer {
+                running: trial.waitForValue
+                interval: 15
+                repeat: true
+                triggeredOnStart: true
+                onTriggered: {
+                    if (!trial.modelReachedValue) {
+                        trial.waitForValue = false;
+                        return;
+                    }
+
+                    if (Date.now() - trial.valueReachedTS > 2000.0) {
+                        trial.recordSuccess();
+                        trial.waitForValue = false;
+                        trial.state = "Waiting";
+                    }
+                }
+            }
+
+            states: [
+                State {
+                    name: "Waiting"
+                    PropertyChanges { target: trial; instruction: "click to start trial" }
+                    PropertyChanges {
+                        target: trialMA
+                        onClicked: {
+                            trial.state = "Running"
+                        }
+                    }
+                },
+                State {
+                    name: "Running"
+                    PropertyChanges {
+                        target: trial
+                        value: Math.random()
+                    }
+                    PropertyChanges {
+                        target: trial
+                        instruction: "Pick value: " + valueToString(trial.value)
+                    }
+                }
+            ]
+
+            Text {
+                anchors.fill: parent
+                text: trial.instruction
+                font: defaultFont
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Text {
+                width: parent.width
+                anchors.bottom: parent.bottom
+                text: {
+                    return "Result: " + trial.successes + " min/max/avg timeToSuccess: " + trial.successMinMs + ", " +
+                    trial.successMaxMs + ", " + (trial.totalSuccessMs / trial.successes);
+                }
+                font: defaultFont
+                wrapMode: Text.WordWrap
+                horizontalAlignment: Text.Bottom
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            MouseArea {
+                id: trialMA
+                anchors.fill: parent
             }
         }
     }
