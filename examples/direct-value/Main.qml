@@ -45,13 +45,29 @@ Root {
         Column {
             spacing: vspace
 
-            Text {
-                text: {
-                    if (arc.connected) {
-                        return "arc found";
-                    }
+            Flow {
+                spacing: 8
 
-                    return "arc not found";
+                Text {
+                    font: defaultFont
+                    text: {
+                        if (arc.connected) {
+                            return "arc found";
+                        }
+
+                        return "arc not found";
+                    }
+                }
+
+                Text {
+                    font: defaultFont
+                    text: {
+                        if (arc.gesture.fineDelta) {
+                            return "(fine adjustment)";
+                        }
+
+                        return "";
+                    }
                 }
             }
 
@@ -178,14 +194,30 @@ Root {
             id: trial
             height: 200
             width: 200
-            color: modelReachedValue ? "white" : "darkgrey"
+            color: {
+                if (modelReachedValue) {
+                    return "white";
+                }
+
+                if ((trial.value - model.value) / (trial.value - trial.previousValue) > 0.0) {
+                    return "olive";
+                } else {
+                    return "red";
+                }
+            }
             property string instruction: ""
             state: "Waiting"
 
             property real value: -1.0
+            property real previousValue: 0.0
+            property real distanceToCover: 0.0
+            property real totalDistanceToCover: 0.0
             property real valueSetTS
             onValueChanged: {
                 valueSetTS = Date.now();
+                previousValue = model.value;
+                distanceToCover = Math.abs(value - previousValue);
+                totalDistanceToCover += distanceToCover;
             }
             property real successMinMs: Number.POSITIVE_INFINITY
             property real successMaxMs: Number.NEGATIVE_INFINITY
@@ -265,7 +297,8 @@ Root {
                 anchors.bottom: parent.bottom
                 text: {
                     return "Result: " + trial.successes + " min/max/avg timeToSuccess: " + trial.successMinMs + ", " +
-                    trial.successMaxMs + ", " + (trial.totalSuccessMs / trial.successes);
+                        trial.successMaxMs + ", " + (trial.totalSuccessMs / trial.successes) +
+                        " speed (extent/sec): " + (100.0 * 1000.0 * trial.totalDistanceToCover / trial.totalSuccessMs);
                 }
                 font: defaultFont
                 wrapMode: Text.WordWrap
