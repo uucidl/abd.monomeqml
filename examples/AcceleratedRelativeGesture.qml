@@ -4,13 +4,13 @@ LinearRelativeGesture {
     id: root
 
     /// How far to look back into the past to decide the acceleration
-    property real lookupWindowMs: 100.0
+    property real lookupWindowMs: 90.0
 
     /// How much the accumulated deltas must be to double the speed
     property int deltaTilDoubling: 64
 
     /// How much the accumulated deltas must be to get to the normal speed
-    property int deltaTilNormal: 16
+    property int deltaTilNormal: 12
 
     property var history: []
 
@@ -28,7 +28,7 @@ LinearRelativeGesture {
         var power = 0.0;
 
         if (deltaInTimeframe <= 0.0) {
-            power = deltaInTimeframe / deltaTilNormal;
+            power = 2.0 * deltaInTimeframe / deltaTilNormal;
         } else {
             power = deltaInTimeframe / deltaTilDoubling;
         }
