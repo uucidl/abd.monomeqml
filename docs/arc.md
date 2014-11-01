@@ -34,3 +34,9 @@ From tehn:
 > oversimplification and there will be cases where the pushbutton was
 > very very useful, but i simply didn't have a sensible method to
 > continue making arcs with pushbuttons.
+
+My experience with the arc's push buttons is that:
+- they disturb the value when being pressed (it's hard to press without rotating the knob)
+- they get stuck sometimes
+
+The first case can be somehow reduced in software (by ignoring rotations around the press) while the second is a killer.
