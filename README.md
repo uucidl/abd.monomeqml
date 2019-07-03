@@ -1,3 +1,5 @@
+This project has been canceled. I'm no longer interested in Qt/QML.
+
 Monome support for QML
 ======================
 
@@ -13,7 +15,7 @@ device questions.
 Status ![Continuous Build Status](https://travis-ci.org/uucidl/pre.monomeqml.svg?branch=master)
 ------
 
-Work in progress, pre-release
+Abandonned
 
 Licensing
 ---------
