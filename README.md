@@ -15,7 +15,7 @@ device questions.
 Status ![Continuous Build Status](https://travis-ci.org/uucidl/pre.monomeqml.svg?branch=master)
 ------
 
-Abandonned
+Abandoned
 
 Licensing
 ---------
